@@ -33,3 +33,5 @@ I also use several packages to validate inputs and do basic stuffs. You can look
 [sequelize]: https://sequelize.org/master/
 [postgresql]: https://www.postgresql.org/about/
 [ejs]: https://ejs.co/
+[node.js]: http://nodejs.org
+[express]: http://expressjs.com
