@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id"
+        content="420660429735-tib00bbvirphqv5ohaqul2bue98ehem9.apps.googleusercontent.com">
+    <title>Express OAuth</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+<body>
+    <h1>This is the login page.</h1>
+    <p>Please login!</p>
+    <div class="g-signin2" data-onsuccess="onSignIn" style="margin-bottom: 15px;"></div>
+
+    <a href="#" onclick="signOut();">Sign out</a>
+
+    <script>
+        function onSignIn(googleUser) {
+            const id_token = googleUser.getAuthResponse().id_token;
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/auth/tokensignin');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                console.log('Signed in as: ' + xhr.responseText);
+                if (xhr.responseText == 'success') {
+                    signOut();
+                    location.assign('/home');
+                }
+            };
+            xhr.send(JSON.stringify({ token: id_token }));
+        }
+
+        function signOut() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+    </script>
+</body>
+
+</html>
