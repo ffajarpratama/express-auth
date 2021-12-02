@@ -11,10 +11,6 @@ class VerifyEmailController {
         const user = await User.findByPk(req.params.id);
 
         if (!token) {
-            res.status(400).json({ message: 'Token expired!' });
-        }
-
-        if (token && token.token !== req.params.token) {
             res.status(400).json({ message: 'Token invalid!' });
         }
 

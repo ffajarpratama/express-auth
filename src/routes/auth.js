@@ -12,7 +12,7 @@ router.post('/register', registerController.register);
 // @route GET auth/login
 // @desc User login endpoint
 router.get('/login', function (req, res, next) {
-    res.render('login');
+    res.render('login', { client_id: process.env.CLIENT_ID });
 })
 
 // @route POST auth/tokensignin
