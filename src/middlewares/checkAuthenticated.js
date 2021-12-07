@@ -1,29 +1,36 @@
-const { OAuth2Client } = require('google-auth-library');
-require('dotenv').config();
-const client = new OAuth2Client(process.env.CLIENT_ID);
+const jwt = require('jsonwebtoken');
+
+// Load access key from .env
+const accessKey = process.env.ACCESS_KEY;
 
 const checkAuthenticated = (req, res, next) => {
-    let token = req.cookies['session-token'];
-    let user = {};
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.split(' ')[1];
+    const cookieToken = req.cookies['session-token'];
 
-    async function verify() {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.CLIENT_ID
+    if (cookieToken) {
+        try {
+            const JWT = jwt.decode(cookieToken);
+            req.user = JWT;
+            next();
+        } catch (error) {
+            console.log('Google token invalid!');
+        }
+    } else if (bearerToken) {
+        jwt.verify(bearerToken, accessKey, (err, user) => {
+            if (err) {
+                return res.status(401).json({
+                    message: 'Token invalid!'
+                });
+            }
+            req.user = user;
+            next();
         });
-
-        const payload = ticket.getPayload();
-        user.name = payload.name;
-        user.email = payload.email;
-        user.picture = payload.picture;
+    } else {
+        return res.status(401).json({
+            message: 'You need to login first!'
+        });
     }
-
-    verify().then(() => {
-        req.user = user;
-        next();
-    }).catch(err => {
-        res.redirect('/auth/login');
-    });
 }
 
 module.exports = checkAuthenticated;

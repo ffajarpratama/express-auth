@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const SendMail = require('../../config/mailTransporter');
 const crypto = require('crypto');
-const { Op } = require('sequelize');
 
 // Load models
 const { User, Token } = require('../../database/models');
@@ -18,12 +17,7 @@ class RegisterController {
         }
 
         await User.findOne({
-            where: {
-                [Op.or]: [
-                    { email: req.body.email },
-                    { username: req.body.username }
-                ]
-            }
+            where: { email: req.body.email }
         }).then((isExist) => {
             if (isExist) {
                 return res.status(400).json({
@@ -32,7 +26,7 @@ class RegisterController {
             } else {
                 User.create({
                     email: req.body.email,
-                    username: req.body.username,
+                    fullName: req.body.firstName + ' ' + req.body.lastName,
                     password: bcrypt.hashSync(req.body.password, 10),
                     isActive: false,
                 }).then((user) => {

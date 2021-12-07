@@ -9,18 +9,19 @@ const auth = require('./auth');
 // Route using
 router.use('/auth', auth);
 
-/* GET home page. */
+// @route GET /
+// @desc Express index endpoint
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-// GET dashboard
+// @route /home
+// @desc Authenticated user endpoint
 router.get('/home', checkAuthenticated, function (req, res, next) {
-  let user = req.user;
-  res.set({
-    'Cache-Control': 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0'
+  const user = req.user;
+  return res.status(200).json({
+    data: user
   });
-  res.render('home', { user });
 });
 
 module.exports = router;

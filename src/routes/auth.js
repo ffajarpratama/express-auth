@@ -17,7 +17,11 @@ router.get('/login', function (req, res, next) {
 
 // @route POST auth/tokensignin
 // @desc Proccess sign in with google
-router.post('/tokensignin', loginController.tokenSignIn);
+router.post('/googleAuthCallback', loginController.googleAuthCallback);
+
+// @route POST auth/login
+// @desc User login endpoint
+router.post('/login', loginController.login);
 
 // @route GET auth/verifyEmail/:id/:token
 // @desc Email verification endpoint
@@ -28,6 +32,6 @@ router.get('/verifyEmail/:id/:token', verifyEmailController.verify);
 router.get('/logout', function (req, res, next) {
     res.clearCookie('session-token');
     res.redirect('/auth/login');
-})
+});
 
 module.exports = router;
