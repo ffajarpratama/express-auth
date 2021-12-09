@@ -15,7 +15,7 @@ router.get('/login', function (req, res, next) {
     res.render('login', { client_id: process.env.CLIENT_ID });
 })
 
-// @route POST auth/tokensignin
+// @route POST auth/googleAuthCallback
 // @desc Proccess sign in with google
 router.post('/googleAuthCallback', loginController.googleAuthCallback);
 
@@ -23,9 +23,13 @@ router.post('/googleAuthCallback', loginController.googleAuthCallback);
 // @desc User login endpoint
 router.post('/login', loginController.login);
 
-// @route GET auth/verifyEmail/:id/:token
+// @route GET auth/email/verify/:token
 // @desc Email verification endpoint
-router.get('/verifyEmail/:id/:token', verifyEmailController.verify);
+router.get('/email/verify/:token', verifyEmailController.verify);
+
+// @route GET auth/email/resendVerification
+// @desc Resend email verification endpoint
+router.get('/email/resendVerification', verifyEmailController.resendEmailVerification);
 
 // @route GET auth/logout
 // @desc User logout endpoint

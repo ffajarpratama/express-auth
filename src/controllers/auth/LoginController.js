@@ -4,6 +4,7 @@ const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const client = new OAuth2Client(process.env.CLIENT_ID);
+const gmailRegistrationKey = process.env.REGISTRATION_KEY;
 
 // Load access key from .env
 const accessKey = process.env.ACCESS_KEY;
@@ -25,6 +26,7 @@ class LoginController {
             where: { email: payload.email },
             defaults: {
                 fullName: payload.name,
+                password: bcrypt.hashSync(payload.email + gmailRegistrationKey, 12),
                 isActive: true
             }
         });

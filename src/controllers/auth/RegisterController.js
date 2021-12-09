@@ -1,9 +1,13 @@
 const bcrypt = require('bcrypt');
 const SendMail = require('../../config/mailTransporter');
-const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+// Load email verification key from env
+const emailVerificationKey = process.env.VERIFICATION_KEY;
 
 // Load models
-const { User, Token } = require('../../database/models');
+const { User } = require('../../database/models');
 // Load input validation
 const validateRegisterInput = require('../../validations/register');
 
@@ -27,29 +31,20 @@ class RegisterController {
                 User.create({
                     email: req.body.email,
                     fullName: req.body.firstName + ' ' + req.body.lastName,
-                    password: bcrypt.hashSync(req.body.password, 10),
+                    password: bcrypt.hashSync(req.body.password, 12),
                     isActive: false,
                 }).then((user) => {
-                    // Generate token for newly registered user
-                    const newToken = crypto.randomBytes(10).toString('hex');
+                    // Create JWT for email verification
+                    const token = jwt.sign({ user }, emailVerificationKey, { expiresIn: '5m' });
 
-                    Token.create({
-                        token: newToken,
-                    }).then((token) => {
-                        const data = {
-                            id: user.id,
-                            email: user.email,
-                            token: token.token
-                        }
-                        // Send verification email to user
-                        SendMail(data.id, data.email, data.token).then(() => {
-                            res.status(200).json({
-                                message: 'You have been registered successfully!'
-                            });
-                        }).catch((error) => {
-                            res.status(400).json({
-                                message: 'Something went wrong while sending your email, please try resend the activation email again.'
-                            })
+                    SendMail(user.email, token).then(() => {
+                        res.status(200).json({
+                            message: 'You have been registered successfully!'
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                        res.status(400).json({
+                            message: 'Something went wrong while sending your email, please try resend the activation email again.'
                         });
                     });
                 }).catch((error) => {
