@@ -10,15 +10,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendMail = async (email, token) => {
+const sendMail = async (email, subject, endpoint, content, token) => {
     const mailOptions = {
         from: process.env.GMAIL_USERNAME,
         to: email,
-        subject: 'Email Registration Verification for Our Application',
+        subject: subject,
         html: `
-            <h2>Please verify your email by clicking on the link below.</h2>
-            <a href='${process.env.CLIENT_URL}/auth/email/verify/${token}'>
-            ${process.env.CLIENT_URL}/auth/email/verify/${token}
+            <h2>${content}</h2>
+            <a href='${process.env.CLIENT_URL}${endpoint}${token}'>
+            ${process.env.CLIENT_URL}${endpoint}${token}
             </a>
             `
     }

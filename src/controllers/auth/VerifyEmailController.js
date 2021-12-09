@@ -16,9 +16,15 @@ class VerifyEmailController {
                 message: 'User with this credentials does not exist on our record!'
             });
         } else {
-            const token = jwt.sign({ user }, emailVerificationKey, { expiresIn: '15m' });
+            const mail = {
+                email: user.email,
+                subject: 'Re-Sent Email Registration Verification for Our Application',
+                endpoint: '/auth/email/verify/',
+                content: 'Please try verifying your email again by clicking the link below',
+                token: jwt.sign({ user }, emailVerificationKey, { expiresIn: '15m' })
+            }
 
-            SendMail(user.email, token).then(() => {
+            SendMail(mail.email, mail.subject, mail.endpoint, mail.content, mail.token).then(() => {
                 res.status(200).json({
                     message: 'Email verification has been sent to your email!'
                 });

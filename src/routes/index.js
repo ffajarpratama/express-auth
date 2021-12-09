@@ -19,6 +19,9 @@ router.get('/', function (req, res, next) {
 // @desc Authenticated user endpoint
 router.get('/home', checkAuthenticated, function (req, res, next) {
   const user = req.user;
+  res.set({
+    'Cache-Control': 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0'
+  });
   return res.status(200).json({
     data: user
   });

@@ -34,10 +34,15 @@ class RegisterController {
                     password: bcrypt.hashSync(req.body.password, 12),
                     isActive: false,
                 }).then((user) => {
-                    // Create JWT for email verification
-                    const token = jwt.sign({ user }, emailVerificationKey, { expiresIn: '5m' });
+                    const mail = {
+                        email: user.email,
+                        subject: 'Email Registration Verification for Our Application',
+                        endpoint: '/auth/email/verify/',
+                        content: 'Please verify your email by clicking the link below',
+                        token: jwt.sign({ user }, emailVerificationKey, { expiresIn: '5m' })
+                    }
 
-                    SendMail(user.email, token).then(() => {
+                    SendMail(mail.email, mail.subject, mail.endpoint, mail.content, mail.token).then(() => {
                         res.status(200).json({
                             message: 'You have been registered successfully!'
                         });

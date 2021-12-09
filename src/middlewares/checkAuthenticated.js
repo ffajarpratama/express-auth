@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // Load access key from .env
 const accessKey = process.env.ACCESS_KEY;
