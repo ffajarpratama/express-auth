@@ -6,8 +6,8 @@ require('dotenv').config();
 // Load email verification key from env
 const emailVerificationKey = process.env.VERIFICATION_KEY;
 
-// Load models
-const { User } = require('../../database/models');
+// Load MongoDB user model
+const User = require('../../mongodb/models/user');
 // Load input validation
 const validateRegisterInput = require('../../validations/register');
 
@@ -21,18 +21,16 @@ class RegisterController {
         }
 
         await User.findOne({
-            where: { email: req.body.email }
+            email: req.body.email
         }).then((isExist) => {
             if (isExist) {
-                return res.status(400).json({
-                    message: 'Email or username already exists!'
-                });
+                return res.status(400).json({ message: 'User with this email already exists!' });
             } else {
                 User.create({
                     email: req.body.email,
                     fullName: req.body.firstName + ' ' + req.body.lastName,
                     password: bcrypt.hashSync(req.body.password, 12),
-                    isActive: false,
+                    isActive: false
                 }).then((user) => {
                     const mail = {
                         email: user.email,
@@ -43,17 +41,17 @@ class RegisterController {
                     }
 
                     SendMail(mail.email, mail.subject, mail.endpoint, mail.content, mail.token).then(() => {
-                        res.status(200).json({
+                        return res.status(200).json({
                             message: 'You have been registered successfully!'
                         });
                     }).catch((error) => {
                         console.log(error);
-                        res.status(400).json({
+                        return res.status(400).json({
                             message: 'Something went wrong while sending your email, please try resend the activation email again.'
                         });
                     });
                 }).catch((error) => {
-                    res.status(400).json(error);
+                    return res.status(400).json(error);
                 });
             }
         });

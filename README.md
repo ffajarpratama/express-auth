@@ -24,14 +24,14 @@ Some of the technologies I used to develop this:
 - [Express] - fast node.js network app framework
 - [Nodemailer] - module for email sending in node.js
 - [Sequelize] - a node.js ORM for Postgres, MySQL, MariaDB, SQLite, and Microsoft SQL Server
-- [PostgreSQL] - the database for storing user-related stuffs
+- [MongoDB] - the database for storing user-related stuffs
 - [ejs] - as the view engine. I like to keep things simple...
 
 I also use several packages to validate inputs and do basic stuffs. You can look at it in the `package.json`
 
 [nodemailer]: https://nodemailer.com/about/
 [sequelize]: https://sequelize.org/master/
-[postgresql]: https://www.postgresql.org/about/
+[mongodb]: https://www.mongodb.com/
 [ejs]: https://ejs.co/
 [node.js]: http://nodejs.org
 [express]: http://expressjs.com

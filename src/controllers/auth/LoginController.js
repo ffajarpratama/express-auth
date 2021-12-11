@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { User } = require('../../database/models');
+const User = require('../../mongodb/models/user');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -22,14 +22,13 @@ class LoginController {
         });
         const payload = ticket.getPayload();
 
-        await User.findOrCreate({
-            where: { email: payload.email },
-            defaults: {
-                fullName: payload.name,
+        await User.findOneAndUpdate(
+            { email: payload.email },
+            {
+                fullname: payload.name,
                 password: bcrypt.hashSync(payload.email + gmailRegistrationKey, 12),
                 isActive: true
-            }
-        });
+            }, { upsert: true });
 
         res.cookie('session-token', googleToken);
         res.send('success');
@@ -44,12 +43,12 @@ class LoginController {
         }
 
         await User.findOne({
-            where: { email: req.body.email }
+            email: req.body.email
         }).then((user) => {
-            // Check if user is exists
+            // Check if user exists
             if (!user) {
                 return res.status(400).json({
-                    message: 'Email does not exist!'
+                    message: 'User with this credentials does not exist in our record!'
                 });
             }
             // Check user activation status
@@ -58,19 +57,19 @@ class LoginController {
                     message: 'Please activate your account first!'
                 });
             }
-            // Process password
+            // Check user password
             bcrypt.compare(req.body.password, user.password).then((isMatch) => {
                 if (isMatch) {
                     // Create JWT payload
-                    jwt.sign({ user }, accessKey, { expiresIn: '1m' }, (err, token) => {
-                        res.status(200).json({
+                    jwt.sign({ user }, accessKey, { expiresIn: '5m' }, (err, token) => {
+                        return res.status(200).json({
                             token: token,
-                            user_data: user
-                        });
-                    });
+                            userData: user
+                        })
+                    })
                 } else {
                     return res.status(400).json({
-                        message: 'Password incorrect!',
+                        message: 'Password incorrect!'
                     });
                 }
             });
