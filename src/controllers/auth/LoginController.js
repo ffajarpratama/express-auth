@@ -25,7 +25,7 @@ class LoginController {
         await User.findOneAndUpdate(
             { email: payload.email },
             {
-                fullname: payload.name,
+                fullName: payload.name,
                 password: bcrypt.hashSync(payload.email + gmailRegistrationKey, 12),
                 isActive: true
             }, { upsert: true });

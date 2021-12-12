@@ -15,13 +15,13 @@ const checkAuthenticated = (req, res, next) => {
             req.user = JWT;
             next();
         } catch (error) {
-            console.log('Google token invalid!');
+            console.log('Google token expired!');
         }
     } else if (bearerToken) {
         jwt.verify(bearerToken, accessKey, (err, user) => {
             if (err) {
                 return res.status(401).json({
-                    message: 'Token invalid!'
+                    message: 'Token expired!'
                 });
             }
             req.user = user;

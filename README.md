@@ -1,11 +1,11 @@
-## Express - Auth
+# Express - Auth
 
-#### _Express.js Authentication Starter Kit_
+## _Express.js Authentication Starter Kit_
 
 Express-Auth is an authentication starter kit for Express.js, at least for me 🙃
 (but I'm considering to publish it to NPM, or should I?)
 
-#### Features
+## Features
 
 Some features included in this starter kit:
 
@@ -15,8 +15,10 @@ Some features included in this starter kit:
 - Re-sending Email Verification
 - Reset Password by Email
 - Re-sending Reset Password Email
+- Profile update
+- Google Sign In using React (soon to be added!)
 
-#### Tech
+## Tech
 
 Some of the technologies I used to develop this:
 
