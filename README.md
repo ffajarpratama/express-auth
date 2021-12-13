@@ -16,7 +16,6 @@ Some features included in this starter kit:
 - Reset Password by Email
 - Re-sending Reset Password Email
 - Profile update
-- Google Sign In using React (soon to be added!)
 
 ## Tech
 
