@@ -5,33 +5,18 @@ require('dotenv').config();
 const accessKey = process.env.ACCESS_KEY;
 
 const checkAuthenticated = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization || req.cookies['session-token'];
     const bearerToken = authHeader && authHeader.split(' ')[1];
-    const cookieToken = req.cookies['session-token'];
 
-    if (cookieToken) {
-        try {
-            const JWT = jwt.decode(cookieToken);
-            req.user = JWT;
-            next();
-        } catch (error) {
-            console.log('Google token expired!');
+    jwt.verify(bearerToken, accessKey, (err, user) => {
+        if (err) {
+            return res.status(401).json({
+                message: 'Token expired!'
+            });
         }
-    } else if (bearerToken) {
-        jwt.verify(bearerToken, accessKey, (err, user) => {
-            if (err) {
-                return res.status(401).json({
-                    message: 'Token expired!'
-                });
-            }
-            req.user = user;
-            next();
-        });
-    } else {
-        return res.status(401).json({
-            message: 'You need to login first!'
-        });
-    }
+        req.user = user;
+        next();
+    });
 }
 
 module.exports = checkAuthenticated;

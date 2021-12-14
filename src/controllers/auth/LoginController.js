@@ -28,10 +28,13 @@ class LoginController {
                 fullName: payload.name,
                 password: bcrypt.hashSync(payload.email + gmailRegistrationKey, 12),
                 isActive: true
-            }, { upsert: true });
-
-        res.cookie('session-token', googleToken);
-        res.send('success');
+            }, { new: true, upsert: true })
+            .then((user) => {
+                jwt.sign({ user }, accessKey, { expiresIn: '5m' }, (err, token) => {
+                    res.cookie('session-token', 'Bearer ' + token);
+                    res.send('success');
+                });
+            });
     }
 
     static async login(req, res) {

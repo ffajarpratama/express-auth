@@ -9,14 +9,15 @@
     <title>Express OAuth</title>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
 
 <body>
-    <h1>This is the login page.</h1>
+    <h1>This is the login page</h1>
     <p>Please login!</p>
-    <div class="g-signin2" data-onsuccess="onSignIn" style="margin-bottom: 15px;"></div>
+    <div id="my-signin2"></div>
 
     <script>
-        function onSignIn(googleUser) {
+        function onSuccess(googleUser) {
             const id_token = googleUser.getAuthResponse().id_token;
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/auth/googleAuthCallback');
@@ -24,20 +25,29 @@
             xhr.onload = function () {
                 console.log('Status: ' + xhr.responseText);
                 if (xhr.responseText == 'success') {
-                    signOut();
                     location.assign('/home');
                 }
             };
             xhr.send(JSON.stringify({ token: id_token }));
         }
 
-        function signOut() {
-            const auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User signed out.');
+        function onFailure(error) {
+            console.log(error);
+        }
+
+        function renderButton() {
+            gapi.signin2.render('my-signin2', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 40,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
             });
         }
     </script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 </body>
 
 </html>

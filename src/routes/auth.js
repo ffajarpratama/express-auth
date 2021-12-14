@@ -61,7 +61,7 @@ router.get('/password/sendEmail', resetPasswordController.sendResetPasswordEmail
 
 // @route GET auth/logout
 // @desc User logout endpoint
-router.get('/logout', function (req, res, next) {
+router.get('/logout', function (req, res) {
     res.clearCookie('session-token');
     res.redirect('/auth/login');
 });
