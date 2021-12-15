@@ -17,7 +17,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
 
-// TODO: add react for google sign in page
-// TODO: use mongoDB instead of postgres
-
 module.exports = app;
