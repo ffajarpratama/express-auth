@@ -8,6 +8,7 @@
     <meta name="google-signin-client_id" content="<%= client_id %>">
     <title>Express OAuth</title>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 
@@ -19,16 +20,17 @@
     <script>
         function onSuccess(googleUser) {
             const id_token = googleUser.getAuthResponse().id_token;
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/auth/googleAuthCallback');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function () {
-                console.log('Status: ' + xhr.responseText);
-                if (xhr.responseText == 'success') {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/auth/googleAuthCallback',
+                headers: { 'Authorization': 'Bearer ' + id_token }
+            }).then((response) => {
+                if (response.data == 'success') {
                     location.assign('/home');
                 }
-            };
-            xhr.send(JSON.stringify({ token: id_token }));
+            }).catch((error) => {
+                console.log(error);
+            });
         }
 
         function onFailure(error) {

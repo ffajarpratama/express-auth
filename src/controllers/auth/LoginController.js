@@ -14,7 +14,7 @@ const validateLoginInput = require('../../validations/login');
 
 class LoginController {
     static async googleAuthCallback(req, res) {
-        const googleToken = req.body.token;
+        const googleToken = req.headers.authorization.split(' ')[1];
 
         const ticket = await client.verifyIdToken({
             idToken: googleToken,
