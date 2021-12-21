@@ -1,13 +1,12 @@
 const router = require('express').Router();
 
 // Load middlewares
-const authorization = require('../middlewares/authorization');
-const checkAuthenticated = require('../middlewares/checkAuthenticated');
+const { processToken, isAuthenticated } = require('../middlewares/authentication');
 
 // Insert middlewares into array
 const middlewares = [
-    checkAuthenticated,
-    authorization.isProfileOwner
+    processToken,
+    isAuthenticated
 ];
 
 // Load auth controllers
@@ -35,6 +34,14 @@ router.post('/googleAuthCallback', loginController.googleAuthCallback);
 // @desc User login endpoint
 router.post('/login', loginController.login);
 
+// @route POST auth/refreshAccessToken
+// @desc Refresh access token endpoint
+router.post('/refreshAccessToken', loginController.refreshAccessToken);
+
+// @route GET auth/logout
+// @desc User logout endpoint
+router.post('/logout', loginController.logout);
+
 // @route GET auth/profile
 // @desc User profile endpoint
 router.get('/profile', middlewares, profileController.getUserProfile);
@@ -58,12 +65,5 @@ router.get('/password/reset/:token', resetPasswordController.resetPassword);
 // @route GET auth/password/sendEmail
 // @desc Send reset password link by email
 router.get('/password/sendEmail', resetPasswordController.sendResetPasswordEmail);
-
-// @route GET auth/logout
-// @desc User logout endpoint
-router.get('/logout', function (req, res) {
-    res.clearCookie('session-token');
-    res.redirect('/auth/login');
-});
 
 module.exports = router;

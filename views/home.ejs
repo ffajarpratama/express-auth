@@ -15,7 +15,11 @@
 <body>
     <h1>Hello, <%= user.fullName %>! Welcome to Express!</h1>
     <p>You are logged in!</p>
-    <a href="/auth/logout" onclick="signOut()">Sign out</a>
+    <form action="/auth/logout" method="POST">
+        <button type="submit" onclick="signOut()">
+            Sign Out
+        </button>
+    </form>
 
     <script>
         function onLoad() {
