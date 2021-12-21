@@ -10,11 +10,11 @@ Express-Auth is an authentication starter kit for Express.js, at least for me ðŸ
 Some features included in this starter kit:
 
 - Google Sign In
-- Registration by Email or Username
-- Email Verification
-- Re-sending Email Verification
-- Reset Password by Email
-- Re-sending Reset Password Email
+- Registration by email
+- Email verification
+- Re-sending email verification
+- Reset password by email
+- Re-sending reset password email
 - Profile update
 
 ## Tech
